@@ -8,3 +8,5 @@ dist/
 .idea/
 .vscode/
 postgres_data/
+repomix-output.xml
+.repomixignore

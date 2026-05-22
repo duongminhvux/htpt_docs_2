@@ -1,5 +1,8 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
-export const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws'
+const httpOrigin = window.location.origin
+const wsOrigin = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}`
+
+export const API_URL = `${window.location.origin}/api`
+export const WS_URL = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`
 
 export function getToken() {
   return localStorage.getItem('token')

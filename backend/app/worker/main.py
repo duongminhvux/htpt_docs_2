@@ -69,6 +69,7 @@ def transform_against_history(
     document_id: str,
     base_version: int,
     op_delta: dict[str, Any],
+    user_id: str | None = None,
 ) -> dict[str, Any]:
     transformed = op_delta
 
@@ -86,6 +87,13 @@ def transform_against_history(
     )
 
     for previous in history:
+        # Quan trọng:
+        # Bỏ qua operation trước đó của cùng user.
+        # Vì các operation này là chuỗi thao tác tuần tự từ cùng client,
+        # không phải xung đột tương tranh cần OT transform.
+        if user_id and previous.user_id == user_id:
+            continue
+
         transformed = transform_delta(transformed, previous.transformed_delta)
 
     return transformed
@@ -120,6 +128,7 @@ async def process_operation(payload: dict[str, Any]):
             document_id=document_id,
             base_version=base_version,
             op_delta=incoming_delta,
+            user_id=user_id,
         )
 
         new_delta = apply_delta(document.content_delta, transformed_delta)
