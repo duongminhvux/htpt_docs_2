@@ -101,6 +101,8 @@ services:
     image: nginx:1.27-alpine
     container_name: htpt_docs_nginx
     restart: unless-stopped
+    profiles:
+      - proxy
     ports:
       - "8080:80"
     volumes:
