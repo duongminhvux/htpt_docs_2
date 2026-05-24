@@ -1,8 +1,26 @@
-const httpOrigin = window.location.origin
-const wsOrigin = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}`
+function isDirectViteDevServer() {
+  return window.location.port === '5173'
+}
 
-export const API_URL = `${window.location.origin}/api`
-export const WS_URL = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`
+function getHttpBaseUrl() {
+  if (isDirectViteDevServer()) {
+    return import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+  }
+
+  return `${window.location.origin}/api`
+}
+
+function getWsBaseUrl() {
+  if (isDirectViteDevServer()) {
+    return import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws'
+  }
+
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+  return `${protocol}//${window.location.host}/ws`
+}
+
+export const API_URL = getHttpBaseUrl()
+export const WS_URL = getWsBaseUrl()
 
 export function getToken() {
   return localStorage.getItem('token')
@@ -32,14 +50,19 @@ export async function apiFetch(path, options = {}) {
     'Content-Type': 'application/json',
     ...(options.headers || {})
   }
-  if (token) headers.Authorization = `Bearer ${token}`
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
 
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers
   })
 
-  if (response.status === 204) return null
+  if (response.status === 204) {
+    return null
+  }
 
   let data = null
   try {
@@ -52,23 +75,60 @@ export async function apiFetch(path, options = {}) {
     const message = data?.detail || data?.message || `HTTP ${response.status}`
     throw new Error(message)
   }
+
   return data
 }
 
 export const authApi = {
-  register: (payload) => apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(payload) }),
-  login: (payload) => apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
+  register: (payload) =>
+    apiFetch('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
+  login: (payload) =>
+    apiFetch('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
   me: () => apiFetch('/auth/me')
 }
 
 export const docsApi = {
   list: () => apiFetch('/documents'),
-  create: (title = 'Untitled document') => apiFetch('/documents', { method: 'POST', body: JSON.stringify({ title }) }),
+
+  create: (title = 'Untitled document') =>
+    apiFetch('/documents', {
+      method: 'POST',
+      body: JSON.stringify({ title })
+    }),
+
   get: (id) => apiFetch(`/documents/${id}`),
-  update: (id, payload) => apiFetch(`/documents/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
-  remove: (id) => apiFetch(`/documents/${id}`, { method: 'DELETE' }),
+
+  update: (id, payload) =>
+    apiFetch(`/documents/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload)
+    }),
+
+  remove: (id) =>
+    apiFetch(`/documents/${id}`, {
+      method: 'DELETE'
+    }),
+
   permissions: (id) => apiFetch(`/documents/${id}/permissions`),
-  share: (id, payload) => apiFetch(`/documents/${id}/share`, { method: 'POST', body: JSON.stringify(payload) }),
-  removePermission: (id, permissionId) => apiFetch(`/documents/${id}/permissions/${permissionId}`, { method: 'DELETE' }),
+
+  share: (id, payload) =>
+    apiFetch(`/documents/${id}/share`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
+  removePermission: (id, permissionId) =>
+    apiFetch(`/documents/${id}/permissions/${permissionId}`, {
+      method: 'DELETE'
+    }),
+
   history: (id) => apiFetch(`/documents/${id}/history`)
 }
