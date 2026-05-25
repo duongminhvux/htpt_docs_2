@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -10,6 +11,8 @@ from app.routers import auth, documents, websocket
 from app.services.broker import broker
 from app.services.connection_manager import manager
 from app.services.redis_service import redis_service
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [backend] %(levelname)s: %(message)s")
 
 
 async def wait_async_service(name: str, func, retries: int = 30, delay: float = 2.0):

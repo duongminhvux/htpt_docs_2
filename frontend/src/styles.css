@@ -415,3 +415,34 @@ a { color: #1a73e8; text-decoration: none; }
   .paper-zone .ql-editor.ql-blank::before { left: 34px; top: 48px; }
   .share-form { grid-template-columns: 1fr; }
 }
+
+.history-section-title {
+  margin: 16px 0 8px;
+  color: #3c4043;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.history-item.compact { opacity: .92; }
+.history-preview {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #f8fafd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ghost-button.small {
+  padding: 6px 10px;
+  font-size: 12px;
+  justify-content: center;
+}
+.ghost-button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+.ql-cursors {
+  z-index: 30;
+}

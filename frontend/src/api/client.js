@@ -130,5 +130,23 @@ export const docsApi = {
       method: 'DELETE'
     }),
 
-  history: (id) => apiFetch(`/documents/${id}/history`)
+  history: (id) => apiFetch(`/documents/${id}/history`),
+
+  versions: (id) => apiFetch(`/documents/${id}/versions`),
+
+  rollback: (id, version) =>
+    apiFetch(`/documents/${id}/rollback`, {
+      method: 'POST',
+      body: JSON.stringify({ version })
+    }),
+
+  undo: (id) =>
+    apiFetch(`/documents/${id}/undo`, {
+      method: 'POST'
+    }),
+
+  redo: (id) =>
+    apiFetch(`/documents/${id}/redo`, {
+      method: 'POST'
+    })
 }

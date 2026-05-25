@@ -31,6 +31,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: htpt_docs_rabbitmq
+    user: root # 🔥 Đã thêm: Sửa lỗi Permission denied (.erlang.cookie) trên máy khác
     restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}

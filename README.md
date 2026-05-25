@@ -35,8 +35,8 @@ FastAPI Gateway broadcast tới các client đang mở tài liệu
 ## Chạy dự án bằng Docker
 
 ```bash
-cp .env.example .env
-docker compose up --build
+cp .env.docker.example .env
+docker compose --profile proxy up --build
 ```
 
 Mở các URL:
